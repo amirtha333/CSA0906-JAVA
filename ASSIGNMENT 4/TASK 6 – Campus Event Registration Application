@@ -1,0 +1,236 @@
+import java.util.*;
+
+class Registration {
+
+String studentId;
+String studentName;
+String eventName;
+
+Registration(String studentId, String studentName, String eventName) {
+    this.studentId = studentId;
+    this.studentName = studentName;
+    this.eventName = eventName;
+}
+}
+
+public class Main {
+
+static Scanner sc = new Scanner(System.in);
+
+static ArrayList<Registration> registrations = new ArrayList<>();
+
+static void registerStudent() {
+
+    System.out.print("Enter Student ID: ");
+    String id = sc.nextLine().trim();
+
+    System.out.print("Enter Student Name: ");
+    String name = sc.nextLine().trim();
+
+    if (id.isEmpty() || name.isEmpty()) {
+        System.out.println("Error: All fields are required.");
+        return;
+    }
+
+    System.out.println("\nAvailable Events:");
+    System.out.println("1. Dance Competition");
+    System.out.println("2. Singing Competition");
+    System.out.println("3. Coding Contest");
+
+    System.out.print("Select Event: ");
+
+    int choice;
+
+    try {
+        choice = Integer.parseInt(sc.nextLine());
+    } catch (NumberFormatException e) {
+        System.out.println("Invalid event selection.");
+        return;
+    }
+
+    String event;
+
+    switch (choice) {
+        case 1:
+            event = "Dance Competition";
+            break;
+        case 2:
+            event = "Singing Competition";
+            break;
+        case 3:
+            event = "Coding Contest";
+            break;
+        default:
+            System.out.println("Invalid event selection.");
+            return;
+    }
+
+    for (Registration r : registrations) {
+
+        if (r.studentId.equalsIgnoreCase(id)
+                && r.eventName.equals(event)) {
+
+            System.out.println(
+                "Error: Student already registered for this event."
+            );
+            return;
+        }
+    }
+
+    registrations.add(new Registration(id, name, event));
+
+    System.out.println("\nRegistration Successful!");
+    System.out.println("Student ID: " + id);
+    System.out.println("Student Name: " + name);
+    System.out.println("Event: " + event);
+}
+
+static void viewRegistrations() {
+
+    System.out.println("\n----- ALL REGISTRATIONS -----");
+
+    if (registrations.isEmpty()) {
+        System.out.println("No registrations available.");
+        return;
+    }
+
+    System.out.printf("%-15s %-20s %-25s%n",
+            "Student ID", "Student Name", "Event");
+
+    for (Registration r : registrations) {
+        System.out.printf("%-15s %-20s %-25s%n",
+                r.studentId, r.studentName, r.eventName);
+    }
+}
+
+static void filterRegistrations() {
+
+    System.out.println("\n1. Dance Competition");
+    System.out.println("2. Singing Competition");
+    System.out.println("3. Coding Contest");
+
+    System.out.print("Select Event to Filter: ");
+
+    int choice;
+
+    try {
+        choice = Integer.parseInt(sc.nextLine());
+    } catch (NumberFormatException e) {
+        System.out.println("Invalid selection.");
+        return;
+    }
+
+    String event;
+
+    switch (choice) {
+        case 1:
+            event = "Dance Competition";
+            break;
+        case 2:
+            event = "Singing Competition";
+            break;
+        case 3:
+            event = "Coding Contest";
+            break;
+        default:
+            System.out.println("Invalid selection.");
+            return;
+    }
+
+    System.out.println("\n----- FILTERED REGISTRATIONS -----");
+
+    boolean found = false;
+
+    for (Registration r : registrations) {
+
+        if (r.eventName.equals(event)) {
+            System.out.println(
+                r.studentId + " | " +
+                r.studentName + " | " +
+                r.eventName
+            );
+            found = true;
+        }
+    }
+
+    if (!found) {
+        System.out.println("No registrations found.");
+    }
+}
+
+static void exportRegistrations() {
+
+    System.out.println("\n----- EXPORTED REGISTRATION LIST -----");
+
+    if (registrations.isEmpty()) {
+        System.out.println("No data available to export.");
+        return;
+    }
+
+    System.out.println("Student ID,Student Name,Event");
+
+    for (Registration r : registrations) {
+        System.out.println(
+            r.studentId + "," +
+            r.studentName + "," +
+            r.eventName
+        );
+    }
+
+    System.out.println("Export completed successfully.");
+}
+
+public static void main(String[] args) {
+
+    int choice = 0;
+
+    do {
+
+        System.out.println("\n===== CAMPUS EVENT REGISTRATION =====");
+        System.out.println("1. Register Student");
+        System.out.println("2. View All Registrations");
+        System.out.println("3. Filter by Event");
+        System.out.println("4. Export Registrations");
+        System.out.println("5. Exit");
+
+        System.out.print("Enter your choice: ");
+
+        try {
+            choice = Integer.parseInt(sc.nextLine());
+        } catch (NumberFormatException e) {
+            System.out.println("Please enter a valid choice.");
+            choice = 0;
+            continue;
+        }
+
+        switch (choice) {
+
+            case 1:
+                registerStudent();
+                break;
+
+            case 2:
+                viewRegistrations();
+                break;
+
+            case 3:
+                filterRegistrations();
+                break;
+
+            case 4:
+                exportRegistrations();
+                break;
+
+            case 5:
+                System.out.println("Application Closed.");
+                break;
+
+            default:
+                System.out.println("Invalid Choice.");
+        }
+
+    } while (choice != 5);
+
+    sc.close();
+}
+}
