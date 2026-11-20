@@ -1,0 +1,133 @@
+import java.util.*;
+
+// Student class
+class Student {
+    int id;
+    String name;
+    String department;
+    int age;
+
+    Student(int id, String name, String department, int age) {
+        this.id = id;
+        this.name = name;
+        this.department = department;
+        this.age = age;
+    }
+
+    public String toString() {
+        return id + " " + name + " " + department + " " + age;
+    }
+}
+
+// Generic DAO Interface
+interface Dao<T, K> {
+    void insert(T obj);
+    T findById(K id);
+    List<T> findAll();
+    void update(T obj);
+    void delete(K id);
+}
+
+// StudentDao implementation
+class StudentDao implements Dao<Student, Integer> {
+
+    ArrayList<Student> students = new ArrayList<>();
+
+    public void insert(Student s) {
+        students.add(s);
+        System.out.println("Student inserted successfully.");
+    }
+
+    public Student findById(Integer id) {
+        for (Student s : students) {
+            if (s.id == id) {
+                return s;
+            }
+        }
+        return null;
+    }
+
+    public List<Student> findAll() {
+        return students;
+    }
+
+    public void update(Student student) {
+        for (int i = 0; i < students.size(); i++) {
+            if (students.get(i).id == student.id) {
+                students.set(i, student);
+                System.out.println("Student updated successfully.");
+                return;
+            }
+        }
+        System.out.println("Student not found.");
+    }
+
+    public void delete(Integer id) {
+        Student s = findById(id);
+
+        if (s != null) {
+            students.remove(s);
+            System.out.println("Student deleted successfully.");
+        } else {
+            System.out.println("Student not found.");
+        }
+    }
+}
+
+// Main class
+public class Main {
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+
+        StudentDao dao = new StudentDao();
+
+        System.out.print("Enter Student ID: ");
+        int id = sc.nextInt();
+        sc.nextLine();
+
+        System.out.print("Enter Student Name: ");
+        String name = sc.nextLine();
+
+        System.out.print("Enter Department: ");
+        String department = sc.nextLine();
+
+        System.out.print("Enter Age: ");
+        int age = sc.nextInt();
+
+        Student student = new Student(id, name, department, age);
+
+        dao.insert(student);
+
+        System.out.println("\nAll Students:");
+        for (Student s : dao.findAll()) {
+            System.out.println(s);
+        }
+
+        System.out.print("\nEnter ID to Search: ");
+        int searchId = sc.nextInt();
+
+        Student result = dao.findById(searchId);
+
+        if (result != null) {
+            System.out.println("Student Found: " + result);
+        } else {
+            System.out.println("Student Not Found.");
+        }
+
+        System.out.println("\nUpdating Student...");
+        Student updated = new Student(id, name, department, age + 1);
+        dao.update(updated);
+
+        System.out.println("\nDeleting Student...");
+        dao.delete(id);
+
+        System.out.println("\nFinal Student List:");
+        for (Student s : dao.findAll()) {
+            System.out.println(s);
+        }
+
+        sc.close();
+    }
+}
