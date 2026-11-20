@@ -1,0 +1,76 @@
+import java.util.*;
+
+public class Main { public static void main(String[] args) { int[] sizes = {1000, 5000, 10000};
+
+    for (int size : sizes) {
+        ArrayList<Integer> arrayList = new ArrayList<>();
+        LinkedList<Integer> linkedList = new LinkedList<>();
+        ArrayDeque<Integer> arrayDeque = new ArrayDeque<>();
+
+        for (int i = 0; i < size; i++) {
+            arrayList.add(i);
+            linkedList.add(i);
+            arrayDeque.add(i);
+        }
+
+        System.out.println("\nPlaylist Size: " + size);
+
+        long start = System.nanoTime();
+        arrayList.add(size);
+        long end = System.nanoTime();
+        System.out.println("ArrayList Add End: " + (end - start) + " ns");
+
+        start = System.nanoTime();
+        linkedList.add(size);
+        end = System.nanoTime();
+        System.out.println("LinkedList Add End: " + (end - start) + " ns");
+
+        start = System.nanoTime();
+        arrayList.add(0, -1);
+        end = System.nanoTime();
+        System.out.println("ArrayList Add Front: " + (end - start) + " ns");
+
+        start = System.nanoTime();
+        linkedList.addFirst(-1);
+        end = System.nanoTime();
+        System.out.println("LinkedList Add Front: " + (end - start) + " ns");
+
+        start = System.nanoTime();
+        arrayList.get(size / 2);
+        end = System.nanoTime();
+        System.out.println("ArrayList Get Middle: " + (end - start) + " ns");
+
+        start = System.nanoTime();
+        linkedList.get(size / 2);
+        end = System.nanoTime();
+        System.out.println("LinkedList Get Middle: " + (end - start) + " ns");
+
+        start = System.nanoTime();
+        arrayDeque.addFirst(-1);
+        arrayDeque.addLast(size);
+        end = System.nanoTime();
+        System.out.println("ArrayDeque Add Both Ends: " + (end - start) + " ns");
+
+        start = System.nanoTime();
+        arrayDeque.removeFirst();
+        end = System.nanoTime();
+        System.out.println("ArrayDeque Remove Front: " + (end - start) + " ns");
+
+        start = System.nanoTime();
+        for (int song : arrayList) {
+            // Iteration
+        }
+        end = System.nanoTime();
+        System.out.println("ArrayList Iteration: " + (end - start) + " ns");
+
+        start = System.nanoTime();
+        for (int song : linkedList) {
+            // Iteration
+        }
+        end = System.nanoTime();
+        System.out.println("LinkedList Iteration: " + (end - start) + " ns");
+    }
+
+    System.out.println("\nExperiment Completed!");
+}
+}
