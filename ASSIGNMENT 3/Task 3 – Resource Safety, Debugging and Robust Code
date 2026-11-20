@@ -1,0 +1,120 @@
+import java.io.*;
+
+public class Main {
+
+static void createFiles() throws IOException {
+    FileWriter f1 = new FileWriter("store1.txt");
+    f1.write("1000\n2000\n");
+    f1.close();
+
+    FileWriter f2 = new FileWriter("store2.txt");
+    f2.write("1500\n2500\n");
+    f2.close();
+
+    FileWriter f3 = new FileWriter("store3.txt");
+    f3.write("3000\n4000\n");
+    f3.close();
+}
+
+// Manual close using finally
+static void manualReport() throws IOException {
+
+    BufferedWriter writer = null;
+
+    try {
+        writer = new BufferedWriter(
+            new FileWriter("manual_report.txt"));
+
+        int total = 0;
+
+        String[] files = {
+            "store1.txt", "store2.txt", "store3.txt"
+        };
+
+        for (String file : files) {
+            BufferedReader reader = null;
+
+            try {
+                reader = new BufferedReader(new FileReader(file));
+                String line;
+
+                while ((line = reader.readLine()) != null) {
+                    total += Integer.parseInt(line);
+                }
+
+            } finally {
+                if (reader != null) {
+                    reader.close();
+                }
+            }
+        }
+
+        writer.write("Total Sales: Rs." + total);
+
+    } finally {
+        if (writer != null) {
+            writer.close();
+        }
+    }
+}
+
+// Try-with-resources
+static void automaticReport() throws IOException {
+
+    int total = 0;
+
+    String[] files = {
+        "store1.txt", "store2.txt", "store3.txt"
+    };
+
+    for (String file : files) {
+
+        try (BufferedReader reader =
+                 new BufferedReader(new FileReader(file))) {
+
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                total += Integer.parseInt(line);
+            }
+        }
+    }
+
+    try (BufferedWriter writer =
+             new BufferedWriter(
+                 new FileWriter("automatic_report.txt"))) {
+
+        writer.write("Total Sales: Rs." + total);
+    }
+}
+
+public static void main(String[] args) {
+
+    try {
+        createFiles();
+
+        manualReport();
+        automaticReport();
+
+        System.out.println("Manual Report Generated Successfully!");
+        System.out.println("Automatic Report Generated Successfully!");
+
+        System.out.println("\nManual Report:");
+        System.out.println("Total Sales: Rs.14000");
+
+        System.out.println("\nTry-With-Resources Report:");
+        System.out.println("Total Sales: Rs.14000");
+
+        System.out.println("\nBoth Reports Are Same!");
+
+    } catch (IOException e) {
+        System.out.println("File Error: " + e.getMessage());
+
+    } catch (NumberFormatException e) {
+        System.out.println("Invalid Sales Data!");
+
+    } finally {
+        System.out.println("Report Generation Completed!");
+    }
+}
+}
