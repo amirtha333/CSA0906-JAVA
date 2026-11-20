@@ -1,0 +1,54 @@
+import java.util.ArrayList; import java.util.Scanner;
+
+public class Main {
+
+static ArrayList<String> points = new ArrayList<>();
+
+static void mouseClicked(int x, int y) {
+
+    points.add("(" + x + ", " + y + ")");
+
+    System.out.println("Dot Drawn at: (" + x + ", " + y + ")");
+    System.out.println("Clicks: " + points.size());
+}
+
+static void paint() {
+
+    System.out.println("\nRedrawing Stored Dots:");
+
+    for (String point : points) {
+        System.out.println("Dot at " + point);
+    }
+}
+
+public static void main(String[] args) {
+
+    Scanner sc = new Scanner(System.in);
+
+    System.out.println("DRAW PAD");
+
+    System.out.print("Enter number of clicks: ");
+    int n = sc.nextInt();
+
+    for (int i = 1; i <= n; i++) {
+
+        System.out.println("\nClick " + i);
+
+        System.out.print("Enter X coordinate: ");
+        int x = sc.nextInt();
+
+        System.out.print("Enter Y coordinate: ");
+        int y = sc.nextInt();
+
+        mouseClicked(x, y);
+    }
+
+    System.out.println("\nWindow Minimized and Restored");
+
+    paint();
+
+    System.out.println("\nFinal Click Count: " + points.size());
+
+    sc.close();
+}
+}
