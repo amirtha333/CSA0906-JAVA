@@ -1,0 +1,128 @@
+import java.io.; import java.util.;
+
+// Resident Class class Resident implements Serializable {
+
+private static final long serialVersionUID = 1L;
+
+String name;
+String registerNumber;
+transient String password;
+transient ConnectionData connection;
+String phoneNumber;
+
+Resident(String name, String registerNumber,
+         String password, String phoneNumber) {
+
+    this.name = name;
+    this.registerNumber = registerNumber;
+    this.password = password;
+    this.phoneNumber = phoneNumber;
+    this.connection = new ConnectionData();
+}
+}
+
+// Dummy database connection representation class ConnectionData { String status = "Connected"; }
+
+// Room Class class Room implements Serializable {
+
+private static final long serialVersionUID = 1L;
+
+int roomNumber;
+ArrayList<Resident> residents = new ArrayList<>();
+
+Room(int roomNumber) {
+    this.roomNumber = roomNumber;
+}
+
+void addResident(Resident r) {
+    residents.add(r);
+}
+}
+
+// Hostel Class class Hostel implements Serializable {
+
+private static final long serialVersionUID = 1L;
+
+String hostelName;
+ArrayList<Room> rooms = new ArrayList<>();
+
+Hostel(String hostelName) {
+    this.hostelName = hostelName;
+}
+
+void addRoom(Room room) {
+    rooms.add(room);
+}
+}
+
+// Main Class public class Main {
+
+public static void main(String[] args) {
+
+    Hostel hostel = new Hostel("University Hostel");
+
+    Room room = new Room(101);
+
+    Resident r1 = new Resident(
+        "Sarmila", "192524383", "pass123", "9876543210"
+    );
+
+    Resident r2 = new Resident(
+        "Amirtha", "192524384", "pass456", "9876543211"
+    );
+
+    room.addResident(r1);
+    room.addResident(r2);
+
+    hostel.addRoom(room);
+
+    // Serialization
+    try {
+        ObjectOutputStream out = new ObjectOutputStream(
+            new FileOutputStream("hostel.dat")
+        );
+
+        out.writeObject(hostel);
+        out.close();
+
+        System.out.println("Hostel data saved successfully.");
+
+    } catch (IOException e) {
+        System.out.println("Serialization error.");
+    }
+
+    // Deserialization
+    try {
+        ObjectInputStream in = new ObjectInputStream(
+            new FileInputStream("hostel.dat")
+        );
+
+        Hostel savedHostel = (Hostel) in.readObject();
+        in.close();
+
+        System.out.println("\nHostel Name: " +
+            savedHostel.hostelName);
+
+        for (Room rm : savedHostel.rooms) {
+
+            System.out.println("\nRoom Number: " +
+                rm.roomNumber);
+
+            for (Resident r : rm.residents) {
+
+                System.out.println("Name: " + r.name);
+                System.out.println("Register Number: " +
+                    r.registerNumber);
+                System.out.println("Password: " +
+                    r.password);
+                System.out.println("Phone Number: " +
+                    r.phoneNumber);
+                System.out.println("------------------");
+            }
+        }
+
+    } catch (Exception e) {
+        System.out.println("Deserialization error.");
+    }
+}
+}
