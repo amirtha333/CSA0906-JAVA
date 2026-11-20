@@ -1,0 +1,100 @@
+import java.io.; import java.nio.file.; import java.util.*;
+
+class PassStore { private final Path file;
+
+PassStore(Path file) {
+    this.file = file;
+}
+
+public void add(String passId, String regNo, String name,
+                int route, double amount) throws IOException {
+
+    try (BufferedWriter w = Files.newBufferedWriter(
+            file, StandardOpenOption.CREATE,
+            StandardOpenOption.APPEND)) {
+
+        w.write(String.join(",", passId, regNo, name,
+                String.valueOf(route), String.valueOf(amount)));
+        w.newLine();
+    }
+}
+
+public String[] find(String passId) throws IOException {
+
+    try (BufferedReader br = Files.newBufferedReader(file)) {
+        String line;
+
+        while ((line = br.readLine()) != null) {
+            String[] fields = line.split(",", -1);
+
+            if (fields.length != 5) {
+                continue;
+            }
+
+            if (fields[0].equals(passId)) {
+                return fields;
+            }
+        }
+    }
+
+    return null;
+}
+
+public void list() throws IOException {
+
+    try (BufferedReader br = Files.newBufferedReader(file)) {
+        String line;
+
+        while ((line = br.readLine()) != null) {
+            String[] fields = line.split(",", -1);
+
+            if (fields.length == 5) {
+                System.out.println(Arrays.toString(fields));
+            }
+        }
+    }
+}
+}
+
+public class Main { public static void main(String[] args) throws IOException {
+
+    Path f = Files.createTempFile("passes", ".csv");
+    PassStore store = new PassStore(f);
+
+    store.add("P1001", "192311001", "Arun", 12, 4500);
+    Files.writeString(f, "P1002,DAMAGED LINE\n",
+            StandardOpenOption.APPEND);
+    store.add("P1003", "192311003", "Divya", 7, 3800);
+
+    System.out.println("Find P1003:");
+    System.out.println(Arrays.toString(store.find("P1003")));
+
+    System.out.println("Find P1002:");
+    System.out.println(Arrays.toString(store.find("P1002")));
+
+    System.out.println("Find P9999:");
+    System.out.println(Arrays.toString(store.find("P9999")));
+
+    System.out.println("List of valid passes:");
+    store.list();
+
+    Files.deleteIfExists(f);
+}
+} B1.2 – Compare with Your Design The implementation follows the Part A design by using a text file, BufferedReader, and BufferedWriter.
+
+One change was adding a damaged-line validation condition. It checks the number of fields before searching. This prevents invalid records from affecting the search operation. B1.3 – Measure the Effect of Buffering Prediction:
+
+Unbuffered reading may take more time because it reads data in smaller operations.
+Buffered reading reduces repeated read operations by processing data in blocks.
+As file size increases, buffering is expected to improve performance. File size Unbuffered time Buffered time 1 MB Measure by execution Measure by execution 10 MB Measure by execution Measure by execution 50 MB Measure by execution Measure by execution
+Note: Actual execution times depend on your online compiler and computer. Run the benchmark to obtain genuine measurements; don't enter invented timings. B1.4 – Measure Growth Number of records Search time 1,000 Measure by execution 10,000 Measure by execution 50,000 Measure by execution 100,000 Measure by execution
+
+Interpretation:
+
+The find() method scans records one by one until it finds the required pass ID. As the number of records increases, the search may take more time.
+
+Its worst-case time complexity is O(n), where n is the number of records. Alternative Concept and Complexity Analysis If the file is loaded once into a HashMap, each pass ID can be used as a key. Method Time for q searches Memory File scanning O(q × n) O(1) extra memory HashMap O(n + q) average O(n)
+
+Conclusion:
+
+A file scan uses less extra memory but takes more time for repeated searches. A HashMap uses additional memory but provides faster average search performance.
