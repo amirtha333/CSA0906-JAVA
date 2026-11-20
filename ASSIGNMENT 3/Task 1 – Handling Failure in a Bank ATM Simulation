@@ -1,0 +1,59 @@
+import java.util.Scanner; import java.util.InputMismatchException;
+
+public class Main {
+
+static double balance = 10000;
+
+static void withdraw(int accountNumber, double amount) {
+
+    if (amount < 0) {
+        throw new IllegalArgumentException(
+            "Negative amount is not allowed");
+    }
+
+    if (amount == 0) {
+        throw new IllegalArgumentException(
+            "Amount must be greater than zero");
+    }
+
+    if (amount > balance) {
+        throw new ArithmeticException(
+            "Insufficient balance");
+    }
+
+    balance = balance - amount;
+
+    System.out.println("Withdrawal Successful!");
+    System.out.println("Account Number: " + accountNumber);
+    System.out.println("Withdrawn Amount: Rs." + amount);
+    System.out.println("Remaining Balance: Rs." + balance);
+}
+
+public static void main(String[] args) {
+
+    Scanner sc = new Scanner(System.in);
+
+    try {
+        System.out.print("Enter Account Number: ");
+        int accountNumber = sc.nextInt();
+
+        System.out.print("Enter Withdrawal Amount: ");
+        double amount = sc.nextDouble();
+
+        withdraw(accountNumber, amount);
+
+    } catch (InputMismatchException e) {
+        System.out.println("Invalid Input! Enter numbers only.");
+
+    } catch (IllegalArgumentException e) {
+        System.out.println("Invalid Amount: " + e.getMessage());
+
+    } catch (ArithmeticException e) {
+        System.out.println("Transaction Error: " + e.getMessage());
+
+    } finally {
+        System.out.println("ATM Session Completed.");
+        sc.close();
+    }
+}
+}
