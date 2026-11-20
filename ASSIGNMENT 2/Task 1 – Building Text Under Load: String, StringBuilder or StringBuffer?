@@ -1,1 +1,154 @@
+public class Main {
 
+static volatile long result = 0;
+
+// Method 1: Using String
+static long usingString(int tickets, int fields) {
+
+    long checksum = 0;
+
+    for (int i = 0; i < tickets; i++) {
+
+        String ticket = "";
+
+        for (int j = 1; j <= fields; j++) {
+            ticket = ticket + "Field" + j + " ";
+        }
+
+        checksum += ticket.length();
+    }
+
+    return checksum;
+}
+
+// Method 2: Using StringBuilder
+static long usingStringBuilder(int tickets, int fields) {
+
+    long checksum = 0;
+
+    for (int i = 0; i < tickets; i++) {
+
+        StringBuilder ticket = new StringBuilder();
+
+        for (int j = 1; j <= fields; j++) {
+            ticket.append("Field").append(j).append(" ");
+        }
+
+        checksum += ticket.toString().length();
+    }
+
+    return checksum;
+}
+
+// Method 3: Using StringBuffer
+static long usingStringBuffer(int tickets, int fields) {
+
+    long checksum = 0;
+
+    for (int i = 0; i < tickets; i++) {
+
+        StringBuffer ticket = new StringBuffer();
+
+        for (int j = 1; j <= fields; j++) {
+            ticket.append("Field").append(j).append(" ");
+        }
+
+        checksum += ticket.toString().length();
+    }
+
+    return checksum;
+}
+
+// Measure execution time
+static void benchmark(String name, int tickets,
+                      int fields, int repeats) {
+
+    long stringTime = 0;
+    long builderTime = 0;
+    long bufferTime = 0;
+
+    long checksum = 0;
+
+    // Warm-up
+    usingStringBuilder(10, 10);
+    usingStringBuffer(10, 10);
+    usingString(10, 10);
+
+    for (int i = 0; i < repeats; i++) {
+
+        long start = System.nanoTime();
+        checksum += usingString(tickets, fields);
+        stringTime += System.nanoTime() - start;
+
+        start = System.nanoTime();
+        checksum += usingStringBuilder(tickets, fields);
+        builderTime += System.nanoTime() - start;
+
+        start = System.nanoTime();
+        checksum += usingStringBuffer(tickets, fields);
+        bufferTime += System.nanoTime() - start;
+    }
+
+    result = checksum;
+
+    System.out.println("\n" + name);
+    System.out.println("Tickets: " + tickets);
+    System.out.println("Fields per Ticket: " + fields);
+
+    System.out.println("String Average Time: " +
+        (stringTime / repeats) + " ns");
+
+    System.out.println("StringBuilder Average Time: " +
+        (builderTime / repeats) + " ns");
+
+    System.out.println("StringBuffer Average Time: " +
+        (bufferTime / repeats) + " ns");
+
+    System.out.println("Estimated intermediate Strings: " +
+        (long) tickets * fields);
+
+    System.out.println("Builder/Buffer final Strings: " +
+        tickets);
+}
+
+public static void main(String[] args) {
+
+    Runtime runtime = Runtime.getRuntime();
+
+    int repeats = 3;
+
+    System.out.println("RAILWAY E-TICKET GENERATION");
+    System.out.println("STRING PERFORMANCE COMPARISON");
+
+    long memoryBefore = runtime.totalMemory()
+            - runtime.freeMemory();
+
+    // Workload 1: Small ticket
+    benchmark("WORKLOAD 1 - SMALL TICKET",
+              1, 6, repeats);
+
+    // Workload 2: Large booking system
+    benchmark("WORKLOAD 2 - HEAVY LOAD",
+              10000, 50, repeats);
+
+    // Workload 3: Many fields
+    benchmark("WORKLOAD 3 - MANY FIELDS",
+              1000, 100, repeats);
+
+    long memoryAfter = runtime.totalMemory()
+            - runtime.freeMemory();
+
+    System.out.println("\nMEMORY ANALYSIS");
+
+    System.out.println("Memory Before: " +
+        memoryBefore / 1024 + " KB");
+
+    System.out.println("Memory After: " +
+        memoryAfter / 1024 + " KB");
+
+    System.out.println("Memory Difference: " +
+        (memoryAfter - memoryBefore) / 1024 + " KB");
+
+    System.out.println("\nBenchmark Completed!");
+}
+}
