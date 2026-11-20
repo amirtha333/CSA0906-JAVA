@@ -1,0 +1,114 @@
+import java.io.; import java.util.; import java.util.concurrent.*;
+
+class ResultProcessor implements Callable {
+
+private String fileName;
+
+ResultProcessor(String fileName) {
+    this.fileName = fileName;
+}
+
+public String call() throws Exception {
+
+    File file = new File(fileName);
+
+    if (!file.exists()) {
+        throw new FileNotFoundException("File not found");
+    }
+
+    Scanner sc = new Scanner(file);
+
+    int marks = sc.nextInt();
+    sc.close();
+
+    if (marks < 0 || marks > 100) {
+        throw new Exception("Invalid marks");
+    }
+
+    return fileName + " : PASS/RESULT - " + marks;
+}
+}
+
+public class Main {
+
+public static void main(String[] args)
+        throws InterruptedException {
+
+    int totalFiles = 10000;
+    int threadCount = 4;
+
+    ExecutorService executor =
+            Executors.newFixedThreadPool(threadCount);
+
+    ConcurrentHashMap<String, String> results =
+            new ConcurrentHashMap<>();
+
+    int success = 0;
+    int failure = 0;
+
+    long start = System.currentTimeMillis();
+
+    List<Future<String>> futures = new ArrayList<>();
+
+    // Creating sample files
+    for (int i = 1; i <= totalFiles; i++) {
+
+        try {
+            FileWriter writer =
+                    new FileWriter("result" + i + ".txt");
+
+            if (i % 100 == 0) {
+                writer.write("INVALID");
+            } else {
+                writer.write(String.valueOf(i % 101));
+            }
+
+            writer.close();
+
+        } catch (IOException e) {
+            System.out.println("File creation error");
+        }
+    }
+
+    // Submitting tasks
+    for (int i = 1; i <= totalFiles; i++) {
+
+        String fileName = "result" + i + ".txt";
+
+        if (i == 9999) {
+            fileName = "missing.txt";
+        }
+
+        futures.add(
+            executor.submit(new ResultProcessor(fileName))
+        );
+    }
+
+    // Collecting results
+    for (int i = 0; i < futures.size(); i++) {
+
+        try {
+            String result = futures.get(i).get();
+
+            results.put("File" + i, result);
+            success++;
+
+        } catch (ExecutionException e) {
+            failure++;
+        }
+    }
+
+    executor.shutdown();
+    executor.awaitTermination(1, TimeUnit.MINUTES);
+
+    long end = System.currentTimeMillis();
+
+    System.out.println("Total Files: " + totalFiles);
+    System.out.println("Successful Files: " + success);
+    System.out.println("Failed Files: " + failure);
+    System.out.println("Total Results Stored: " + results.size());
+    System.out.println("Thread Pool Size: " + threadCount);
+    System.out.println("Total Processing Time: "
+            + (end - start) + " ms");
+}
+}
