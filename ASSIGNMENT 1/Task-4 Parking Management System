@@ -1,0 +1,102 @@
+import java.util.Scanner;
+
+class Vehicle { String vehicleNo; String vehicleType; String entryTime;
+
+Vehicle() {
+    this("Not Assigned", "Unknown", "Not Assigned");
+}
+
+Vehicle(String vehicleNo, String vehicleType) {
+    this(vehicleNo, vehicleType, "Not Assigned");
+}
+
+Vehicle(String vehicleNo, String vehicleType, String entryTime) {
+    this.vehicleNo = vehicleNo;
+    this.vehicleType = vehicleType;
+    this.entryTime = entryTime;
+}
+
+void display() {
+    System.out.println("Vehicle Number: " + vehicleNo);
+    System.out.println("Vehicle Type: " + vehicleType);
+    System.out.println("Entry Time: " + entryTime);
+}
+}
+
+class ParkingSlot { int slotNo; Vehicle vehicle;
+
+ParkingSlot() {
+    this(0);
+}
+
+ParkingSlot(int slotNo) {
+    this.slotNo = slotNo;
+    this.vehicle = null;
+}
+
+void display() {
+    System.out.println("Slot Number: " + slotNo);
+
+    if (vehicle != null) {
+        vehicle.display();
+    } else {
+        System.out.println("Slot is Empty");
+    }
+}
+}
+
+class ParkingTicket { static int nextTicket = 1001; int ticketNo; Vehicle vehicle;
+
+ParkingTicket() {
+    this(null);
+}
+
+ParkingTicket(Vehicle vehicle) {
+    this.ticketNo = nextTicket++;
+    this.vehicle = vehicle;
+}
+
+void display() {
+    System.out.println("Ticket Number: " + ticketNo);
+
+    if (vehicle != null) {
+        vehicle.display();
+    }
+}
+}
+
+public class Main { public static void main(String[] args) {
+
+    Scanner sc = new Scanner(System.in);
+
+    System.out.print("Enter Vehicle Number: ");
+    String no = sc.nextLine();
+
+    System.out.print("Enter Vehicle Type: ");
+    String type = sc.nextLine();
+
+    System.out.print("Enter Entry Time: ");
+    String time = sc.nextLine();
+
+    Vehicle v = new Vehicle(no, type, time);
+
+    System.out.print("Enter Parking Slot Number: ");
+    int slotNo = sc.nextInt();
+
+    ParkingSlot slot = new ParkingSlot(slotNo);
+    slot.vehicle = v;
+
+    ParkingTicket ticket = new ParkingTicket(v);
+
+    System.out.println("\n--- VEHICLE DETAILS ---");
+    v.display();
+
+    System.out.println("\n--- PARKING SLOT DETAILS ---");
+    slot.display();
+
+    System.out.println("\n--- PARKING TICKET ---");
+    ticket.display();
+
+    sc.close();
+}
+}
