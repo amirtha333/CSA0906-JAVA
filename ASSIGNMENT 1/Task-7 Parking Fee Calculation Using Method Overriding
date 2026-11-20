@@ -1,0 +1,132 @@
+import java.util.Scanner; import java.util.Objects;
+
+class Vehicle {
+
+final String vehicleNo;
+
+Vehicle(String vehicleNo) {
+    this.vehicleNo = vehicleNo;
+}
+
+double calculateFee(int hours) {
+    return 0;
+}
+
+@Override
+public String toString() {
+    return "Vehicle Number: " + vehicleNo;
+}
+
+@Override
+public boolean equals(Object obj) {
+    if (this == obj) {
+        return true;
+    }
+
+    if (!(obj instanceof Vehicle)) {
+        return false;
+    }
+
+    Vehicle v = (Vehicle) obj;
+    return vehicleNo.equalsIgnoreCase(v.vehicleNo);
+}
+
+@Override
+public int hashCode() {
+    return Objects.hash(vehicleNo.toUpperCase());
+}
+}
+
+class Car extends Vehicle {
+
+Car(String vehicleNo) {
+    super(vehicleNo);
+}
+
+@Override
+double calculateFee(int hours) {
+    return hours * 40;
+}
+}
+
+class Bike extends Vehicle {
+
+Bike(String vehicleNo) {
+    super(vehicleNo);
+}
+
+@Override
+double calculateFee(int hours) {
+    return hours * 20;
+}
+}
+
+class ElectricCar extends Vehicle {
+
+ElectricCar(String vehicleNo) {
+    super(vehicleNo);
+}
+
+@Override
+double calculateFee(int hours) {
+    return hours * 30;
+}
+}
+
+public class Main {
+
+public static void main(String[] args) {
+
+    Scanner sc = new Scanner(System.in);
+
+    System.out.println("1. Car");
+    System.out.println("2. Bike");
+    System.out.println("3. Electric Car");
+
+    System.out.print("Enter Vehicle Type: ");
+    int choice = sc.nextInt();
+    sc.nextLine();
+
+    System.out.print("Enter Vehicle Number: ");
+    String no = sc.nextLine();
+
+    System.out.print("Enter Parking Hours: ");
+    int hours = sc.nextInt();
+
+    Vehicle v;
+
+    switch (choice) {
+
+        case 1:
+            v = new Car(no);
+            break;
+
+        case 2:
+            v = new Bike(no);
+            break;
+
+        case 3:
+            v = new ElectricCar(no);
+            break;
+
+        default:
+            System.out.println("Invalid Choice!");
+            sc.close();
+            return;
+    }
+
+    System.out.println("\n--- PARKING DETAILS ---");
+    System.out.println(v);
+
+    System.out.println("Parking Hours: " + hours);
+    System.out.println("Parking Fee: Rs." + v.calculateFee(hours));
+
+    Vehicle v2 = new Vehicle(no);
+
+    System.out.println("Same Vehicle: " + v.equals(v2));
+    System.out.println("Hash Code: " + v.hashCode());
+
+    sc.close();
+}
+}
+
