@@ -1,0 +1,75 @@
+import java.util.Scanner;
+
+public class Main { public static void main(String[] args) {
+
+    Scanner sc = new Scanner(System.in);
+
+    System.out.print("Enter Number of Floors: ");
+    int floors = sc.nextInt();
+
+    int[][] slots = new int[floors][];
+    String[][] vehicleNo = new String[floors][];
+    String[][] entryTime = new String[floors][];
+    double[][] fee = new double[floors][];
+
+    for (int i = 0; i < floors; i++) {
+        System.out.print("Enter Slots in Floor " + (i + 1) + ": ");
+        int n = sc.nextInt();
+
+        slots[i] = new int[n];
+        vehicleNo[i] = new String[n];
+        entryTime[i] = new String[n];
+        fee[i] = new double[n];
+
+        for (int j = 0; j < n; j++) {
+            slots[i][j] = j + 1;
+            vehicleNo[i][j] = "";
+            entryTime[i][j] = "";
+            fee[i][j] = 0.0;
+        }
+    }
+
+    sc.nextLine();
+
+    System.out.print("\nEnter Floor Number: ");
+    int floor = sc.nextInt() - 1;
+
+    System.out.print("Enter Slot Number: ");
+    int slot = sc.nextInt() - 1;
+    sc.nextLine();
+
+    if (floor >= 0 && floor < floors &&
+        slot >= 0 && slot < slots[floor].length) {
+
+        System.out.print("Enter Vehicle Number: ");
+        vehicleNo[floor][slot] = sc.nextLine();
+
+        System.out.print("Enter Entry Time: ");
+        entryTime[floor][slot] = sc.nextLine();
+
+        System.out.print("Enter Parking Duration (Minutes): ");
+        int minutes = sc.nextInt();
+
+        System.out.print("Enter Fee Per Hour: ");
+        double rate = sc.nextDouble();
+
+        double hours = minutes / 60.0;
+        double totalFee = hours * rate;
+
+        fee[floor][slot] = totalFee;
+
+        System.out.println("\n--- PARKING DETAILS ---");
+        System.out.println("Floor Number: " + (floor + 1));
+        System.out.println("Slot Number: " + (slot + 1));
+        System.out.println("Vehicle Number: " + vehicleNo[floor][slot]);
+        System.out.println("Entry Time: " + entryTime[floor][slot]);
+        System.out.println("Duration: " + minutes + " Minutes");
+        System.out.println("Total Fee: Rs." + totalFee);
+
+    } else {
+        System.out.println("Invalid Floor or Slot Number!");
+    }
+
+    sc.close();
+}
+}
