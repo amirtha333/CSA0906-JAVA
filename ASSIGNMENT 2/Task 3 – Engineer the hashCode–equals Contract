@@ -1,0 +1,66 @@
+import java.util.HashSet; import java.util.Set;
+
+class Student { private final String regNo; private final String name;
+
+Student(String regNo, String name) {
+    this.regNo = regNo;
+    this.name = name;
+}
+
+@Override
+public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof Student)) return false;
+
+    Student s = (Student) o;
+    return regNo.equals(s.regNo);
+}
+
+// TODO 1: Correct hashCode()
+@Override
+public int hashCode() {
+    return regNo.hashCode();
+}
+
+@Override
+public String toString() {
+    return regNo + " " + name;
+}
+}
+
+public class Main { public static void main(String[] args) {
+
+    Set<Student> present = new HashSet<>();
+
+    // Test 1: Duplicate student scans
+    present.add(new Student("192311001", "Arun"));
+    present.add(new Student("192311002", "Divya"));
+    present.add(new Student("192311001", "Arun"));
+
+    System.out.println("Test 1 - Duplicate Scans");
+    System.out.println("Unique students: " + present.size());
+
+    // Test 2: Multiple duplicate scans
+    Set<Student> test2 = new HashSet<>();
+
+    test2.add(new Student("192311003", "Kumar"));
+    test2.add(new Student("192311003", "Kumar"));
+    test2.add(new Student("192311004", "Priya"));
+    test2.add(new Student("192311004", "Priya"));
+
+    System.out.println("\nTest 2 - Multiple Scans");
+    System.out.println("Unique students: " + test2.size());
+
+    // Test 3: Different registration numbers
+    Set<Student> test3 = new HashSet<>();
+
+    test3.add(new Student("192311005", "Ravi"));
+    test3.add(new Student("192311006", "Meena"));
+    test3.add(new Student("192311007", "Ajay"));
+
+    System.out.println("\nTest 3 - Different Students");
+    System.out.println("Unique students: " + test3.size());
+
+    System.out.println("\nAttendance Verification Completed!");
+}
+}
