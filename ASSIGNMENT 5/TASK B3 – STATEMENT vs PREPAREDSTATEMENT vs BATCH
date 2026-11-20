@@ -1,0 +1,214 @@
+import java.util.*;
+
+public class Main {
+
+static class BusPass {
+    String passId, regNo, name;
+    int routeNo;
+    double amount;
+
+    BusPass(String id, String reg, String name,
+            int route, double amount) {
+        this.passId = id;
+        this.regNo = reg;
+        this.name = name;
+        this.routeNo = route;
+        this.amount = amount;
+    }
+}
+
+static ArrayList<BusPass> table = new ArrayList<>();
+
+static ArrayList<BusPass> generatePasses(int n) {
+    ArrayList<BusPass> list = new ArrayList<>();
+
+    for (int i = 1; i <= n; i++) {
+        list.add(new BusPass(
+            "P" + i,
+            "REG" + i,
+            "Student" + i,
+            (i % 20) + 1,
+            4500.0
+        ));
+    }
+
+    return list;
+}
+
+// Statement insertion simulation
+static void insertStatement(ArrayList<BusPass> list) {
+    for (BusPass p : list) {
+        table.add(p);
+    }
+}
+
+// PreparedStatement insertion simulation
+static void insertPrepared(ArrayList<BusPass> list) {
+    for (BusPass p : list) {
+        table.add(p);
+    }
+}
+
+// Batch insertion simulation
+static int loadAll(ArrayList<BusPass> list) {
+    int count = 0;
+    int batchSize = 1000;
+
+    for (BusPass p : list) {
+        table.add(p);
+        count++;
+
+        if (count % batchSize == 0) {
+            // Batch completed
+        }
+    }
+
+    return count;
+}
+
+// Display table records
+static void display() {
+    System.out.println("PASS_ID  REG_NO  NAME  ROUTE  AMOUNT");
+
+    for (BusPass p : table) {
+        System.out.println(
+            p.passId + "  " +
+            p.regNo + "  " +
+            p.name + "  " +
+            p.routeNo + "  " +
+            p.amount
+        );
+    }
+
+    System.out.println("Total Records: " + table.size());
+}
+
+// Performance measurement
+static void measure(int n) {
+
+    ArrayList<BusPass> list = generatePasses(n);
+    long start, end;
+
+    table.clear();
+    start = System.nanoTime();
+    insertStatement(list);
+    end = System.nanoTime();
+
+    System.out.printf("Statement: %.3f ms%n",
+            (end - start) / 1000000.0);
+
+    table.clear();
+    start = System.nanoTime();
+    insertPrepared(list);
+    end = System.nanoTime();
+
+    System.out.printf("PreparedStatement: %.3f ms%n",
+            (end - start) / 1000000.0);
+
+    table.clear();
+    start = System.nanoTime();
+    int count = loadAll(list);
+    end = System.nanoTime();
+
+    System.out.printf("Batch: %.3f ms%n",
+            (end - start) / 1000000.0);
+
+    System.out.println("Batch Records: " + count);
+}
+
+// Auto-commit failure simulation
+static void autoCommitTest() {
+
+    table.clear();
+
+    try {
+        for (int i = 1; i <= 10000; i++) {
+
+            if (i == 5000) {
+                throw new RuntimeException("Invalid amount");
+            }
+
+            table.add(new BusPass(
+                "F" + i, "REG" + i,
+                "Student" + i, 10, 4500.0
+            ));
+        }
+
+    } catch (RuntimeException e) {
+        System.out.println("Failure: " + e.getMessage());
+    }
+
+    System.out.println(
+        "Auto-commit remaining records: " + table.size()
+    );
+}
+
+// Transaction rollback simulation
+static void transactionTest() {
+
+    table.clear();
+
+    ArrayList<BusPass> backup = new ArrayList<>(table);
+
+    try {
+        for (int i = 1; i <= 10000; i++) {
+
+            if (i == 5000) {
+                throw new RuntimeException("Invalid amount");
+            }
+
+            table.add(new BusPass(
+                "T" + i, "REG" + i,
+                "Student" + i, 10, 4500.0
+            ));
+        }
+
+    } catch (RuntimeException e) {
+        table.clear();
+        table.addAll(backup);
+
+        System.out.println("Transaction rolled back.");
+    }
+
+    System.out.println(
+        "Transaction remaining records: " + table.size()
+    );
+}
+
+public static void main(String[] args) {
+
+    System.out.println("B3.1 - SMALL DATA TEST");
+
+    table.clear();
+    insertStatement(generatePasses(10));
+    System.out.println("\nStatement:");
+    display();
+
+    table.clear();
+    insertPrepared(generatePasses(10));
+    System.out.println("\nPreparedStatement:");
+    display();
+
+    table.clear();
+    loadAll(generatePasses(10));
+    System.out.println("\nBatch:");
+    display();
+
+    System.out.println("\nB3.2 - PERFORMANCE TEST");
+
+    int[] sizes = {1000, 10000, 100000};
+
+    for (int n : sizes) {
+        System.out.println("\nRecords: " + n);
+        measure(n);
+    }
+
+    System.out.println("\nB3.3 - AUTO-COMMIT TEST");
+    autoCommitTest();
+
+    System.out.println("\nB3.3 - TRANSACTION TEST");
+    transactionTest();
+
+    System.out.println("\nALL TESTS COMPLETED");
+}
+}
