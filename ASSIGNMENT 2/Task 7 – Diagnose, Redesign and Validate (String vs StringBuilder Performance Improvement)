@@ -1,0 +1,72 @@
+public class Main {
+
+static long usingString(int tickets, int fields) {
+    long total = 0;
+
+    for (int i = 0; i < tickets; i++) {
+        String ticket = "";
+
+        for (int j = 1; j <= fields; j++) {
+            ticket = ticket + "Field" + j + " ";
+        }
+
+        total += ticket.length();
+    }
+
+    return total;
+}
+
+static long usingStringBuilder(int tickets, int fields) {
+    long total = 0;
+
+    for (int i = 0; i < tickets; i++) {
+        StringBuilder ticket = new StringBuilder();
+
+        for (int j = 1; j <= fields; j++) {
+            ticket.append("Field").append(j).append(" ");
+        }
+
+        total += ticket.length();
+    }
+
+    return total;
+}
+
+static void compare(int tickets, int fields) {
+
+    long start, end;
+
+    start = System.nanoTime();
+    long result1 = usingString(tickets, fields);
+    end = System.nanoTime();
+    long stringTime = end - start;
+
+    start = System.nanoTime();
+    long result2 = usingStringBuilder(tickets, fields);
+    end = System.nanoTime();
+    long builderTime = end - start;
+
+    System.out.println("\nTickets: " + tickets);
+    System.out.println("Fields per Ticket: " + fields);
+
+    System.out.println("String Time: " + stringTime + " ns");
+    System.out.println("StringBuilder Time: " + builderTime + " ns");
+
+    System.out.println("String Result: " + result1);
+    System.out.println("Builder Result: " + result2);
+
+    System.out.println("Improved: " +
+        (builderTime < stringTime ? "Yes" : "No"));
+}
+
+public static void main(String[] args) {
+
+    System.out.println("ORIGINAL VS REDESIGNED SOLUTION");
+
+    compare(100, 10);
+    compare(1000, 50);
+    compare(5000, 100);
+
+    System.out.println("\nRedesign Validation Completed!");
+}
+}
