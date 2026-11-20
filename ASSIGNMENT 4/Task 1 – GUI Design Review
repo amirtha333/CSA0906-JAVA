@@ -1,0 +1,41 @@
+import java.util.Scanner;
+
+class FeeService {
+
+public String payFee(String regNo, double amount) {
+
+    if (regNo.isEmpty()) {
+        return "Registration number cannot be empty";
+    }
+
+    if (amount <= 0) {
+        return "Enter a valid amount";
+    }
+
+    return "Payment Successful!\n"
+         + "Registration No: " + regNo
+         + "\nAmount: Rs. " + amount;
+}
+}
+
+public class Main {
+
+public static void main(String[] args) {
+
+    Scanner sc = new Scanner(System.in);
+    FeeService service = new FeeService();
+
+    System.out.print("Enter Registration Number: ");
+    String regNo = sc.nextLine();
+
+    System.out.print("Enter Fee Amount: ");
+    double amount = sc.nextDouble();
+
+    String result = service.payFee(regNo, amount);
+
+    System.out.println("\n----- PAYMENT RECEIPT -----");
+    System.out.println(result);
+
+    sc.close();
+}
+}
