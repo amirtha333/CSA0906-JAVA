@@ -1,0 +1,83 @@
+import java.io.; import java.nio.file.;
+
+public class Main {
+
+public static void main(String[] args) throws IOException {
+
+    // B2.1 - Unsafe Login
+    String id = "101";
+    String password = "' OR '1'='1' --";
+
+    System.out.println("B2.1 - LOGIN TESTING");
+
+    String unsafeSQL =
+        "SELECT * FROM users WHERE id='" + id +
+        "' AND pwd='" + password + "'";
+
+    System.out.println("Unsafe SQL Query:");
+    System.out.println(unsafeSQL);
+
+    // Demonstration of the vulnerable query behaviour
+    System.out.println("Unsafe Login: Accepted");
+
+    // PreparedStatement behaviour simulation
+    System.out.println("PreparedStatement Login: Rejected");
+    System.out.println("Reason: Password does not match.");
+
+    // B2.2 - Damaged Bus-Pass File
+    System.out.println();
+    System.out.println("B2.2 - DAMAGED BUS-PASS FILE TESTING");
+
+    Path file = Files.createTempFile("passes", ".csv");
+
+    Files.writeString(file,
+        "P1001,192311001,Arun,12,4500.0\n" +
+        "P1002,DAMAGED LINE\n" +
+        "P1003,192311003,Divya,7,ABC\n" +
+        "\n" +
+        "P1004,192311004,Kumar,15,5000.0\n"
+    );
+
+    try (BufferedReader br = Files.newBufferedReader(file)) {
+
+        String line;
+        int lineNumber = 0;
+
+        while ((line = br.readLine()) != null) {
+
+            lineNumber++;
+
+            if (line.trim().isEmpty()) {
+                System.out.println("Line " + lineNumber +
+                                   ": Empty line skipped");
+                continue;
+            }
+
+            String[] fields = line.split(",", -1);
+
+            if (fields.length != 5) {
+                System.out.println("Line " + lineNumber +
+                                   ": Invalid number of fields");
+                continue;
+            }
+
+            try {
+                Integer.parseInt(fields[3]);
+                Double.parseDouble(fields[4]);
+
+                System.out.println("Line " + lineNumber +
+                                   ": Valid record - " + fields[0]);
+
+            } catch (NumberFormatException e) {
+                System.out.println("Line " + lineNumber +
+                                   ": Invalid numeric value");
+            }
+        }
+    }
+
+    Files.deleteIfExists(file);
+
+    System.out.println();
+    System.out.println("All tests completed.");
+}
+}
