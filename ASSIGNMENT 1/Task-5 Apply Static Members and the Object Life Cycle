@@ -1,0 +1,102 @@
+import java.util.Scanner;
+
+class Vehicle { String vehicleNo; String vehicleType;
+
+Vehicle(String vehicleNo, String vehicleType) {
+    this.vehicleNo = vehicleNo;
+    this.vehicleType = vehicleType;
+}
+
+void display() {
+    System.out.println("Vehicle Number: " + vehicleNo);
+    System.out.println("Vehicle Type: " + vehicleType);
+}
+}
+
+class ParkingTicket {
+
+static int ticketCounter;
+int ticketNo;
+Vehicle vehicle;
+
+static {
+    ticketCounter = 1001;
+    System.out.println("Parking System Initialized");
+}
+
+ParkingTicket(Vehicle vehicle) {
+    this.vehicle = vehicle;
+    this.ticketNo = ticketCounter++;
+}
+
+static void displayCounter() {
+    System.out.println("Next Ticket Number: " + ticketCounter);
+}
+
+void displayTicket() {
+    System.out.println("Ticket Number: " + ticketNo);
+    vehicle.display();
+}
+}
+
+class ParkingFacility {
+
+static int totalOccupancy = 0;
+
+static void displayOccupancy() {
+    System.out.println("Total Occupancy: " + totalOccupancy);
+}
+
+ParkingTicket parkVehicle(Vehicle v) {
+    ParkingTicket ticket = new ParkingTicket(v);
+    totalOccupancy++;
+
+    System.out.println("Vehicle Parked Successfully!");
+    return ticket;
+}
+
+void releaseVehicle(ParkingTicket ticket) {
+    if (ticket != null && ticket.vehicle != null) {
+        ticket.vehicle = null;
+        totalOccupancy--;
+
+        System.out.println("Vehicle Released Successfully!");
+    }
+}
+}
+
+public class Main { public static void main(String[] args) {
+
+    Scanner sc = new Scanner(System.in);
+
+    ParkingFacility facility = new ParkingFacility();
+
+    System.out.print("Enter Vehicle Number: ");
+    String no = sc.nextLine();
+
+    System.out.print("Enter Vehicle Type: ");
+    String type = sc.nextLine();
+
+    Vehicle v = new Vehicle(no, type);
+
+    ParkingTicket ticket = facility.parkVehicle(v);
+
+    System.out.println("\n--- PARKING TICKET ---");
+    ticket.displayTicket();
+
+    ParkingTicket.displayCounter();
+    ParkingFacility.displayOccupancy();
+
+    System.out.println("\n--- VEHICLE EXIT ---");
+    facility.releaseVehicle(ticket);
+
+    ParkingFacility.displayOccupancy();
+
+    ticket = null;
+    v = null;
+
+    System.out.println("Ticket and Vehicle References Released");
+
+    sc.close();
+}
+}
