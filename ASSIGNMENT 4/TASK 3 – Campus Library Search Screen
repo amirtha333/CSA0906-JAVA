@@ -1,0 +1,99 @@
+import java.util.*;
+
+public class Main {
+
+static Scanner sc = new Scanner(System.in);
+
+static ArrayList<String> books = new ArrayList<>();
+
+static void loadBooks() {
+    books.add("Java Programming");
+    books.add("Python Basics");
+    books.add("Data Structures");
+    books.add("Computer Networks");
+    books.add("Artificial Intelligence");
+}
+
+static void searchBooks(String category, String keyword) {
+
+    System.out.println("\n----- SEARCH RESULTS -----");
+
+    boolean found = false;
+
+    for (String book : books) {
+
+        if (book.toLowerCase().contains(keyword.toLowerCase())) {
+
+            System.out.println("Book: " + book);
+            found = true;
+        }
+    }
+
+    if (!found) {
+        System.out.println("No books found.");
+    }
+}
+
+public static void main(String[] args) {
+
+    loadBooks();
+
+    System.out.println("CAMPUS LIBRARY SEARCH SCREEN");
+
+    System.out.println("\nSearch Row");
+    System.out.print("Enter Book Name: ");
+    String keyword = sc.nextLine();
+
+    System.out.println("\nCategories:");
+    System.out.println("1. All");
+    System.out.println("2. Programming");
+    System.out.println("3. Computer Science");
+
+    System.out.print("Select Category: ");
+    int choice = Integer.parseInt(sc.nextLine());
+
+    String category;
+
+    switch (choice) {
+        case 1:
+            category = "All";
+            break;
+        case 2:
+            category = "Programming";
+            break;
+        case 3:
+            category = "Computer Science";
+            break;
+        default:
+            category = "All";
+    }
+
+    searchBooks(category, keyword);
+
+    System.out.println("\nNavigation Buttons");
+    System.out.println("1. Previous");
+    System.out.println("2. Next");
+    System.out.println("3. Reserve");
+
+    System.out.print("Select Action: ");
+    int action = Integer.parseInt(sc.nextLine());
+
+    switch (action) {
+        case 1:
+            System.out.println("Previous Page Selected.");
+            break;
+        case 2:
+            System.out.println("Next Page Selected.");
+            break;
+        case 3:
+            System.out.println("Book Reserved Successfully.");
+            break;
+        default:
+            System.out.println("Invalid Action.");
+    }
+
+    System.out.println("\nStatus: Search Completed.");
+
+    sc.close();
+}
+}
