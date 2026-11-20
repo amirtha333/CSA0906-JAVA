@@ -1,0 +1,142 @@
+import java.util.Scanner;
+
+interface Chargeable { double chargingFee(int kWh);
+
+default void showChargingDetails() {
+    System.out.println("Charging is available.");
+}
+
+static void showChargingRate() {
+    System.out.println("Charging Rate: Rs 12 per kWh");
+}
+}
+
+interface Payable { void makePayment(double amount);
+
+default void paymentStatus() {
+    System.out.println("Payment completed successfully.");
+}
+}
+
+abstract class Vehicle { private String regNo;
+
+Vehicle(String regNo) {
+    this.regNo = regNo;
+}
+
+public String getRegNo() {
+    return regNo;
+}
+
+abstract double calculateFee(int hours);
+
+public void display() {
+    System.out.println("Registration Number: " + regNo);
+}
+}
+
+class Car extends Vehicle implements Payable {
+
+Car(String regNo) {
+    super(regNo);
+}
+
+@Override
+double calculateFee(int hours) {
+    return hours * 30;
+}
+
+@Override
+public void makePayment(double amount) {
+    System.out.println("Payment: Rs " + amount);
+}
+}
+
+class ElectricCar extends Vehicle implements Chargeable, Payable {
+
+ElectricCar(String regNo) {
+    super(regNo);
+}
+
+@Override
+double calculateFee(int hours) {
+    return hours * 30;
+}
+
+@Override
+public double chargingFee(int kWh) {
+    return kWh * 12;
+}
+
+@Override
+public void makePayment(double amount) {
+    System.out.println("Payment: Rs " + amount);
+}
+}
+
+public class Main { public static void main(String[] args) {
+
+    Scanner sc = new Scanner(System.in);
+
+    System.out.println("PARKING MANAGEMENT SYSTEM");
+
+    System.out.print("Enter Vehicle Type (1-Car, 2-Electric Car): ");
+    int type = sc.nextInt();
+    sc.nextLine();
+
+    System.out.print("Enter Registration Number: ");
+    String regNo = sc.nextLine();
+
+    System.out.print("Enter Parking Hours: ");
+    int hours = sc.nextInt();
+
+    Vehicle vehicle;
+
+    if (type == 1) {
+        vehicle = new Car(regNo);
+    } else if (type == 2) {
+        vehicle = new ElectricCar(regNo);
+    } else {
+        System.out.println("Invalid Vehicle Type");
+        sc.close();
+        return;
+    }
+
+    vehicle.display();
+
+    double parkingFee = vehicle.calculateFee(hours);
+
+    System.out.println("Parking Fee: Rs " + parkingFee);
+
+    if (vehicle instanceof ElectricCar) {
+
+        System.out.print("Enter Charging Units (kWh): ");
+        int kWh = sc.nextInt();
+
+        Chargeable charging = (Chargeable) vehicle;
+
+        double chargingFee = charging.chargingFee(kWh);
+
+        charging.showChargingDetails();
+        Chargeable.showChargingRate();
+
+        System.out.println("Charging Fee: Rs " + chargingFee);
+
+        double totalFee = parkingFee + chargingFee;
+
+        System.out.println("Total Fee: Rs " + totalFee);
+
+        Payable payment = (Payable) vehicle;
+        payment.makePayment(totalFee);
+        payment.paymentStatus();
+
+    } else {
+
+        Payable payment = (Payable) vehicle;
+        payment.makePayment(parkingFee);
+        payment.paymentStatus();
+    }
+
+    sc.close();
+}
+}
