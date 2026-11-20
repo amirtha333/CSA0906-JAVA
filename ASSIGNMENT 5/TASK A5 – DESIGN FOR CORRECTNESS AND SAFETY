@@ -1,0 +1,28 @@
+public class Main { public static void main(String[] args) {
+
+    int hostelWallet = 2000;
+    int canteenWallet = 1000;
+    int amount = 500;
+
+    int oldHostel = hostelWallet;
+    int oldCanteen = canteenWallet;
+
+    try {
+        hostelWallet -= amount;
+
+        // Simulate an error between the two updates
+        throw new Exception("Transfer error");
+
+        // canteenWallet += amount;
+
+    } catch (Exception e) {
+        hostelWallet = oldHostel;
+        canteenWallet = oldCanteen;
+
+        System.out.println("Transfer failed. Transaction rolled back.");
+    }
+
+    System.out.println("Hostel Wallet: " + hostelWallet);
+    System.out.println("Canteen Wallet: " + canteenWallet);
+}
+}
