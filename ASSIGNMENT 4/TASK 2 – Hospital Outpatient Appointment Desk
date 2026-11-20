@@ -1,0 +1,159 @@
+import java.util.*;
+
+class Doctor { String name;
+
+Doctor(String name) {
+    this.name = name;
+}
+
+public String toString() {
+    return name;
+}
+}
+
+public class Main {
+
+static Scanner sc = new Scanner(System.in);
+
+static Map<String, List<Doctor>> doctors = new HashMap<>();
+
+static boolean bookingInProgress = false;
+
+static void loadDoctors() {
+
+    doctors.put("Cardiology", Arrays.asList(
+        new Doctor("Dr. Kumar"),
+        new Doctor("Dr. Ravi")
+    ));
+
+    doctors.put("Neurology", Arrays.asList(
+        new Doctor("Dr. Priya"),
+        new Doctor("Dr. Anitha")
+    ));
+
+    doctors.put("Orthopedics", Arrays.asList(
+        new Doctor("Dr. Arun"),
+        new Doctor("Dr. Suresh")
+    ));
+}
+
+static void displayDepartments() {
+    System.out.println("\nAvailable Departments:");
+    System.out.println("1. Cardiology");
+    System.out.println("2. Neurology");
+    System.out.println("3. Orthopedics");
+}
+
+static void refreshDoctorList(String department) {
+
+    System.out.println("\nAvailable Doctors:");
+
+    List<Doctor> list = doctors.get(department);
+
+    for (int i = 0; i < list.size(); i++) {
+        System.out.println((i + 1) + ". " + list.get(i));
+    }
+}
+
+static void bookAppointment() {
+
+    System.out.print("Enter Patient ID: ");
+    String patientId = sc.nextLine();
+
+    if (patientId.trim().isEmpty()) {
+        System.out.println("Error: Patient ID is required.");
+        return;
+    }
+
+    displayDepartments();
+
+    System.out.print("Select Department: ");
+    int choice = Integer.parseInt(sc.nextLine());
+
+    String department;
+
+    switch (choice) {
+        case 1:
+            department = "Cardiology";
+            break;
+        case 2:
+            department = "Neurology";
+            break;
+        case 3:
+            department = "Orthopedics";
+            break;
+        default:
+            System.out.println("Invalid Department.");
+            return;
+    }
+
+    refreshDoctorList(department);
+
+    System.out.print("Select Doctor: ");
+    int doctorChoice = Integer.parseInt(sc.nextLine());
+
+    List<Doctor> list = doctors.get(department);
+
+    if (doctorChoice < 1 || doctorChoice > list.size()) {
+        System.out.println("Invalid Doctor Selection.");
+        return;
+    }
+
+    System.out.println("\nAvailable Time Slots:");
+    System.out.println("1. 10:00 AM");
+    System.out.println("2. 11:00 AM");
+    System.out.println("3. 02:00 PM");
+
+    System.out.print("Select Time Slot: ");
+    int slot = Integer.parseInt(sc.nextLine());
+
+    String time;
+
+    switch (slot) {
+        case 1:
+            time = "10:00 AM";
+            break;
+        case 2:
+            time = "11:00 AM";
+            break;
+        case 3:
+            time = "02:00 PM";
+            break;
+        default:
+            System.out.println("Invalid Time Slot.");
+            return;
+    }
+
+    bookingInProgress = true;
+
+    System.out.println("\nAppointment Confirmed!");
+    System.out.println("Patient ID: " + patientId);
+    System.out.println("Department: " + department);
+    System.out.println("Doctor: " + list.get(doctorChoice - 1));
+    System.out.println("Time Slot: " + time);
+
+    bookingInProgress = false;
+}
+
+public static void main(String[] args) {
+
+    loadDoctors();
+
+    System.out.println("HOSPITAL OUTPATIENT APPOINTMENT DESK");
+
+    bookAppointment();
+
+    System.out.print("\nDo you want to close the application? (yes/no): ");
+    String answer = sc.nextLine();
+
+    if (bookingInProgress) {
+        System.out.println("Booking is in progress. Please wait.");
+    } else if (answer.equalsIgnoreCase("yes")) {
+        System.out.println("Application Closed Successfully.");
+    } else {
+        System.out.println("Application Remains Open.");
+    }
+
+    sc.close();
+}
+}
