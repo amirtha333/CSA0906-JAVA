@@ -1,0 +1,79 @@
+import java.util.*;
+
+public class Main { public static void main(String[] args) {
+
+    int[] sizes = {1000, 5000, 10000};
+
+    for (int size : sizes) {
+
+        HashMap<String, Integer> hashMap = new HashMap<>();
+        TreeMap<String, Integer> treeMap = new TreeMap<>();
+        LinkedHashMap<String, Integer> linkedMap = new LinkedHashMap<>();
+
+        for (int i = 1; i <= size; i++) {
+            String code = String.format("MED%05d", i);
+
+            hashMap.put(code, i * 10);
+            treeMap.put(code, i * 10);
+            linkedMap.put(code, i * 10);
+        }
+
+        System.out.println("\nNumber of Medicines: " + size);
+
+        String searchCode = "MED00001";
+
+        long start = System.nanoTime();
+
+        for (int i = 0; i < 100000; i++) {
+            hashMap.get(searchCode);
+        }
+
+        long end = System.nanoTime();
+        System.out.println("HashMap Lookup Time: " + (end - start) + " ns");
+
+        start = System.nanoTime();
+
+        for (int i = 0; i < 100000; i++) {
+            treeMap.get(searchCode);
+        }
+
+        end = System.nanoTime();
+        System.out.println("TreeMap Lookup Time: " + (end - start) + " ns");
+
+        start = System.nanoTime();
+
+        for (int i = 0; i < 100000; i++) {
+            linkedMap.get(searchCode);
+        }
+
+        end = System.nanoTime();
+        System.out.println("LinkedHashMap Lookup Time: " + (end - start) + " ns");
+
+        start = System.nanoTime();
+        for (String code : treeMap.keySet()) {
+            // Code order report
+        }
+        end = System.nanoTime();
+        System.out.println("Code Order Report Time: " + (end - start) + " ns");
+
+        start = System.nanoTime();
+        for (String code : linkedMap.keySet()) {
+            // Insertion order report
+        }
+        end = System.nanoTime();
+        System.out.println("Insertion Order Report Time: " + (end - start) + " ns");
+
+        System.out.println("HashMap Size: " + hashMap.size());
+        System.out.println("TreeMap Size: " + treeMap.size());
+        System.out.println("LinkedHashMap Size: " + linkedMap.size());
+
+        System.out.println("First Code in TreeMap: " +
+                treeMap.firstKey());
+
+        System.out.println("First Code in LinkedHashMap: " +
+                linkedMap.keySet().iterator().next());
+    }
+
+    System.out.println("\nPharmacy Inventory Analysis Completed!");
+}
+}
