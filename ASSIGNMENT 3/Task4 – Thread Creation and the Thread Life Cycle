@@ -1,0 +1,93 @@
+import java.util.concurrent.atomic.AtomicInteger;
+
+class ScannerThread extends Thread { private int scripts; private AtomicInteger total;
+
+ScannerThread(String name, int scripts, AtomicInteger total) {
+    super(name);
+    this.scripts = scripts;
+    this.total = total;
+}
+
+public void run() {
+    try {
+        System.out.println(getName() + " started");
+
+        Thread.sleep(500);
+
+        System.out.println(getName() + " scanned " + scripts + " scripts");
+        total.addAndGet(scripts);
+
+    } catch (InterruptedException e) {
+        System.out.println(getName() + " interrupted");
+    }
+}
+}
+
+class ScannerTask implements Runnable { private String name; private int scripts; private AtomicInteger total;
+
+ScannerTask(String name, int scripts, AtomicInteger total) {
+    this.name = name;
+    this.scripts = scripts;
+    this.total = total;
+}
+
+public void run() {
+    try {
+        System.out.println(name + " started");
+
+        Thread.sleep(700);
+
+        System.out.println(name + " scanned " + scripts + " scripts");
+        total.addAndGet(scripts);
+
+    } catch (InterruptedException e) {
+        System.out.println(name + " interrupted");
+    }
+}
+}
+
+public class Main { public static void main(String[] args) throws InterruptedException {
+
+    AtomicInteger total = new AtomicInteger(0);
+
+    // Creating threads by extending Thread
+    ScannerThread station1 =
+        new ScannerThread("Station 1", 100, total);
+
+    ScannerThread station2 =
+        new ScannerThread("Station 2", 120, total);
+
+    // Creating threads by implementing Runnable
+    Thread station3 =
+        new Thread(new ScannerTask("Station 3", 90, total));
+
+    Thread station4 =
+        new Thread(new ScannerTask("Station 4", 110, total));
+
+    // Starting all four threads
+    station1.start();
+    station2.start();
+    station3.start();
+    station4.start();
+
+    System.out.println("\nChecking thread status:");
+    System.out.println("Station 1 alive: " + station1.isAlive());
+    System.out.println("Station 2 alive: " + station2.isAlive());
+    System.out.println("Station 3 alive: " + station3.isAlive());
+    System.out.println("Station 4 alive: " + station4.isAlive());
+
+    // Waiting for all threads to finish
+    station1.join();
+    station2.join();
+    station3.join();
+    station4.join();
+
+    System.out.println("\nAll scanner stations completed.");
+    System.out.println("Total scripts scanned: " + total.get());
+
+    System.out.println("Station 1 alive: " + station1.isAlive());
+    System.out.println("Station 2 alive: " + station2.isAlive());
+    System.out.println("Station 3 alive: " + station3.isAlive());
+    System.out.println("Station 4 alive: " + station4.isAlive());
+}
+}
