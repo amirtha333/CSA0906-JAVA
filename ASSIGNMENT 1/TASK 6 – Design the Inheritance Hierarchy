@@ -1,0 +1,139 @@
+import java.util.Scanner;
+
+class Vehicle {
+
+String vehicleNo;
+double rate;
+
+Vehicle(String vehicleNo, double rate) {
+    this.vehicleNo = vehicleNo;
+    this.rate = rate;
+
+    System.out.println("Vehicle Constructor Called");
+}
+
+void display() {
+    System.out.println("Vehicle Number: " + vehicleNo);
+    System.out.println("Parking Rate: Rs." + rate);
+}
+}
+
+class Car extends Vehicle {
+
+String fuelType;
+
+Car(String vehicleNo, double rate, String fuelType) {
+    super(vehicleNo, rate);
+    this.fuelType = fuelType;
+
+    System.out.println("Car Constructor Called");
+}
+
+void display() {
+    super.display();
+    System.out.println("Fuel Type: " + fuelType);
+}
+}
+
+class ElectricCar extends Car {
+
+int batteryCapacity;
+
+ElectricCar(String vehicleNo, double rate,
+            String fuelType, int batteryCapacity) {
+
+    super(vehicleNo, rate, fuelType);
+    this.batteryCapacity = batteryCapacity;
+
+    System.out.println("ElectricCar Constructor Called");
+}
+
+void display() {
+    super.display();
+    System.out.println("Battery Capacity: " +
+                       batteryCapacity + " kWh");
+}
+}
+
+class Bike extends Vehicle {
+
+int engineCC;
+
+Bike(String vehicleNo, double rate, int engineCC) {
+    super(vehicleNo, rate);
+    this.engineCC = engineCC;
+
+    System.out.println("Bike Constructor Called");
+}
+
+void display() {
+    super.display();
+    System.out.println("Engine Capacity: " + engineCC + " CC");
+}
+}
+
+public class Main {
+
+public static void main(String[] args) {
+
+    Scanner sc = new Scanner(System.in);
+
+    System.out.println("1. Car");
+    System.out.println("2. Electric Car");
+    System.out.println("3. Bike");
+
+    System.out.print("Enter Vehicle Type: ");
+    int choice = sc.nextInt();
+    sc.nextLine();
+
+    System.out.print("Enter Vehicle Number: ");
+    String no = sc.nextLine();
+
+    System.out.print("Enter Parking Rate: ");
+    double rate = sc.nextDouble();
+
+    if (choice == 1) {
+
+        sc.nextLine();
+
+        System.out.print("Enter Fuel Type: ");
+        String fuel = sc.nextLine();
+
+        Car c = new Car(no, rate, fuel);
+
+        System.out.println("\n--- CAR DETAILS ---");
+        c.display();
+
+    } else if (choice == 2) {
+
+        sc.nextLine();
+
+        System.out.print("Enter Fuel Type: ");
+        String fuel = sc.nextLine();
+
+        System.out.print("Enter Battery Capacity: ");
+        int battery = sc.nextInt();
+
+        ElectricCar e =
+            new ElectricCar(no, rate, fuel, battery);
+
+        System.out.println("\n--- ELECTRIC CAR DETAILS ---");
+        e.display();
+
+    } else if (choice == 3) {
+
+        System.out.print("Enter Engine CC: ");
+        int cc = sc.nextInt();
+
+        Bike b = new Bike(no, rate, cc);
+
+        System.out.println("\n--- BIKE DETAILS ---");
+        b.display();
+
+    } else {
+        System.out.println("Invalid Choice!");
+    }
+
+    sc.close();
+}
+}
